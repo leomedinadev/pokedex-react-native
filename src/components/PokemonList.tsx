@@ -1,10 +1,17 @@
 import React from 'react'
-import { FlatList, Text, StyleSheet, ActivityIndicator } from 'react-native'
+import { FlatList, StyleSheet, ActivityIndicator } from 'react-native'
 import { PokemonCard } from './PokemonCard'
+import { Pokemon } from '../models/Pokemon'
 
-function PokemonList(props: any) {
+interface PokemonListProps {
+  pokemons: Pokemon[],
+  loadPokemons?: () => void,
+  isNext?: boolean
+}
 
-  const loadMore = () => { props.loadPokemons(); }
+function PokemonList(props: PokemonListProps) {
+
+  const loadMore = () => { props.loadPokemons?.(); }
   return (
     <FlatList 
         data={props.pokemons} 
@@ -13,11 +20,11 @@ function PokemonList(props: any) {
         keyExtractor={(pokemon) => String(pokemon.id)}
         renderItem={ ({item}) => <PokemonCard pokemon={item} />}
         contentContainerStyle={styles.flatListContentContainer}
-        onEndReached={props.isNext && loadMore}
+        onEndReached={props.isNext ? loadMore : undefined}
         onEndReachedThreshold={0.1}
-        ListFooterComponent={props.isNext && (
+        ListFooterComponent={props.isNext ? (
           <ActivityIndicator size="large" color="#AEAEAE" style={styles.spinner} />
-        )}
+        ) : null}
     />
   )
 }

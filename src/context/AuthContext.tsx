@@ -1,30 +1,37 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useState, PropsWithChildren } from "react";
+import { UserDetails } from "../utils/userDB";
 
-export const AuthContext = createContext({
-    auth: undefined,
-    login: () => {},
-    logout: () => {},
-  });
-  
-  export function AuthProvider(props) {
-    const { children } = props;
-    const [auth, setAuth] = useState(undefined);
-  
-    const login = (userData) => {
-      setAuth(userData);
-    };
-  
-    const logout = () => {
-      setAuth(undefined);
-    };
-  
-    const valueContext = {
-      auth,
-      login,
-      logout,
-    };
-  
-    return (
-      <AuthContext.Provider value={valueContext}>{children}</AuthContext.Provider>
-    );
-  }
+interface AuthContextValue {
+  auth?: UserDetails,
+  login: (userData: UserDetails) => void,
+  logout: () => void
+}
+
+export const AuthContext = createContext<AuthContextValue>({
+  auth: undefined,
+  login: () => {},
+  logout: () => {},
+});
+
+export function AuthProvider(props: PropsWithChildren) {
+  const { children } = props;
+  const [auth, setAuth] = useState<UserDetails | undefined>(undefined);
+
+  const login = (userData: UserDetails) => {
+    setAuth(userData);
+  };
+
+  const logout = () => {
+    setAuth(undefined);
+  };
+
+  const valueContext = {
+    auth,
+    login,
+    logout,
+  };
+
+  return (
+    <AuthContext.Provider value={valueContext}>{children}</AuthContext.Provider>
+  );
+}

@@ -1,5 +1,5 @@
 import React, {useCallback, useState} from 'react'
-import { Text, View, StyleSheet, Button} from 'react-native'
+import { Text, View, StyleSheet, Button } from 'react-native'
 import {size} from 'lodash';
 import useAuth from '../../hooks/useAuth';
 import { useFocusEffect } from '@react-navigation/native';
@@ -21,6 +21,9 @@ function UserData() {
         })()
       }, [])
     );
+
+  if (!auth) return null;
+
   return (
     <View style={styles.content}>
         <View style={styles.titleBlock}>
@@ -34,12 +37,12 @@ function UserData() {
         <ItemMenu title="Total Favoritos" text={`${total} pokemons`} />
         </View>
 
-        <Button title="Desconectarse" onPress={logout} style={styles.btnLogoun} />
+        <Button title="Desconectarse" onPress={logout} />
     </View>
   )
 }
 
-function ItemMenu(props: any) {
+function ItemMenu(props: { title: string, text: string }) {
     const {title, text} = props;
 
     return (
@@ -75,10 +78,6 @@ const styles = StyleSheet.create({
       fontWeight: "bold",
       paddingRight: 10,
       width: 120,
-    },
-    btnLogoun: {
-      paddingTop: 20,
-      borderRadius: 10
     },
   });
 

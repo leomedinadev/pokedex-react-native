@@ -20,5 +20,10 @@ export const constants = {
         dragon: "#7038F8",
         dark: "#705848",
         fairy: "#EE99AC",
-    }
+    } as Record<string, string>
+}
+
+// Color del tipo; gris si PokeAPI devuelve un tipo que no está en la tabla
+export function getPokemonTypeColor(type: string) {
+    return constants.POKEMON_TYPE_COLORS[type.toLowerCase()] || "#A8A8A8";
 }

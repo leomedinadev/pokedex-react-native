@@ -1,49 +1,42 @@
-import React, { useEffect, useState } from 'react'
-import { Text, SafeAreaView } from 'react-native'
+import React, { useEffect, useRef, useState } from 'react'
+import { SafeAreaView } from 'react-native'
 import { getPokemonDetailsByUrlApi, getPokemons } from '../api/pokemon-api-service';
 import { PokemonList } from '../components/PokemonList';
+import { Pokemon } from '../models/Pokemon';
 
 function PokedexScreen() {
     const [pokemons, setPokemons] = useState<Pokemon[]>([]);
-    const [nextUrl, setNextUrl] = useState(null);
+    const [nextUrl, setNextUrl] = useState<string | null>(null);
+    // Evita pedir dos veces la misma página si la lista dispara onEndReached seguido
+    const loading = useRef(false);
 
     useEffect( () => {
-        ( async () => { await loadPokemons() })()
+        loadPokemons();
     }, []);
 
     const loadPokemons = async () => {
+        if (loading.current) return;
+        loading.current = true;
         try {
-            const response = await getPokemons(nextUrl);
-            console.log(response);
+            const response = await getPokemons(nextUrl ?? undefined);
+            const pokemonList = await Promise.all(
+                response.results.map((item) => getPokemonDetailsByUrlApi(item.url))
+            );
+            setPokemons((prev) => [...prev, ...pokemonList]);
             setNextUrl(response.next);
-
-            const pokemonList: Pokemon[] = [];
-            for (const item of response.results) {
-                console.log('item -->', item);
-                const pokemonDetail = await getPokemonDetailsByUrlApi(item.url);
-                //console.log('pokemonDetail -->', pokemonDetail.types[0].type.name);
-                
-                pokemonList.push({
-                    id: pokemonDetail.id,
-                    name: pokemonDetail.name,
-                    type: pokemonDetail.types[0].type.name,
-                    order: pokemonDetail.order,
-                    image: pokemonDetail.sprites.other['official-artwork'].front_default
-                });
-
-            }
-            setPokemons([...pokemons, ...pokemonList])
         } catch (error) {
-            console.log(error);
+            console.error(error);
+        } finally {
+            loading.current = false;
         }
     }
 
     return (
         <SafeAreaView>
             <PokemonList
-                pokemons={pokemons} 
-                loadPokemons={loadPokemons} 
-                isNext={nextUrl}
+                pokemons={pokemons}
+                loadPokemons={loadPokemons}
+                isNext={Boolean(nextUrl)}
             />
         </SafeAreaView>
     )

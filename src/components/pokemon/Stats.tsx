@@ -1,14 +1,15 @@
 import React from 'react'
-import { Text, StyleSheet, View } from 'react-native'
+import { Text, StyleSheet, View, DimensionValue } from 'react-native'
 import { map, capitalize} from 'lodash';
+import { PokemonStat } from '../../models/Pokemon';
 
-
-function Stats(props: any) {
+function Stats(props: { stats: PokemonStat[] }) {
   const barStyles = (num: number) => {
     const color = num > 49 ? "#00ac17" : "#ff3e3e";
     return {
       backgroundColor: color,
-      width: `${num}%`,
+      // Hay estadísticas base por encima de 100: la barra se llena como máximo
+      width: `${Math.min(num, 100)}%` as DimensionValue,
     };
   };
   
@@ -29,7 +30,6 @@ function Stats(props: any) {
         </View>
       ))}
     </View>
-    
   )
 }
 
@@ -72,8 +72,6 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   bar: {
-    // backgroundColor: "red",
-    // width: "40%",
     height: 5,
     borderRadius: 20,
   },
