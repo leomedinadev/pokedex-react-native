@@ -1,76 +1,95 @@
-# ⚛︎React Native Pokedex App
+# Pokedex — React Native
 
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+Aplicación móvil hecha con React Native que lista los pokemon de [PokeAPI](https://pokeapi.co/), muestra el detalle de cada uno y permite guardar favoritos en el dispositivo. Es un proyecto de práctica de navegación, consumo de una API REST y almacenamiento local.
 
-<aqui gif>
+## Qué hace
 
-## 1. Description
-This project is a new practical item of my React Native mobile app series that made with:
- - react native v0.73.6
- - [stack-navigator](https://reactnavigation.org/docs/stack-navigator/) - (to make transitions between screens)
- - [react-navigation/material-bottom-tabs](https://reactnavigation.org/docs/material-bottom-tab-navigator/) - (material-design themed tab bar on the bottom)
- - [react-native-vector-icons](https://github.com/oblador/react-native-vector-icons) - (UI buttons and logos)
+- **Pokedex:** lista en dos columnas con carga progresiva (20 pokemon por página) al llegar al final.
+- **Detalle:** imagen, tipos y estadísticas base de un pokemon.
+- **Favoritos:** con sesión iniciada se puede marcar un pokemon con el corazón de la cabecera; la lista se guarda con AsyncStorage.
+- **Mi cuenta:** formulario de inicio de sesión (Formik + Yup) y datos del usuario.
 
-## 2. API and Fonts
-- [pokemon-api](https://pokeapi.co/) - Pokemón RESTFULL API
+El inicio de sesión es de demostración: no hay backend y el único usuario está definido en [`src/utils/userDB.ts`](src/utils/userDB.ts) (usuario `leonardo`, contraseña `leonardo`). La sesión no se conserva al cerrar la aplicación.
 
-## 3. Available Scripts
-<ul>
-  <li>
-    <span style="background-color: #6495ed;color: #ffff">The project has been tested on Android device
-    </span>
-  </li>
-</ul>
+## Tecnologías
 
+- React Native 0.73.6 y React 18, con TypeScript
+- React Navigation 6 (pestañas inferiores y pilas nativas)
+- AsyncStorage, Formik, Yup y Lodash
+- react-native-vector-icons (Font Awesome)
+- Jest para las pruebas
 
-In the project directory, you can run special commands like these:
+## Requisitos
 
-To install dependencies 
+- Node 18 o superior
+- El [entorno de React Native](https://reactnative.dev/docs/environment-setup) para Android (JDK 17 y Android SDK)
 
-<ul>
-  <li>$ npm install | $ yarn install</li>
-  <li>$ npx react-native run-android</li>
-  <li>$ npx react-native run-ios (iOS)</li>
-  <ul>
-    <li>$ cd project/ios/ and run $ pod install</li>
-  </ul>
-</ul>
+El proyecto se ha probado en Android. En iOS los iconos no están configurados: `react-native.config.js` desactiva el enlace de `react-native-vector-icons` en esa plataforma y `Info.plist` no declara las fuentes.
 
-To start the development server and run app on simulator or device
+## Cómo ejecutarlo
 
-## 4. Notice
-<ul>
-  <li>
-    <span style="background-color: #7fffd4;">Feel free to   fork this repo and add your own twist!
-    </span>
-  </li>
-</ul>
+```bash
+npm install
+npm start
+```
 
-<hr>
+Con Metro en marcha, en otra terminal:
 
+```bash
+npm run android
+```
 
-### 👋 You can visit my webpage here: [Leonardo's website](https://github.com/leo7medina)
+## Comandos
 
+| Comando | Qué hace |
+|---|---|
+| `npm start` | Arranca Metro |
+| `npm run android` | Compila e instala la aplicación en Android |
+| `npm run ios` | Compila e instala la aplicación en iOS (antes, `pod install` dentro de `ios/`) |
+| `npm test` | Ejecuta las pruebas con Jest |
+| `npm run typecheck` | Comprueba los tipos con TypeScript |
+| `npm run lint` | Analiza el código con ESLint |
 
-### Notes:
+## Estructura
 
- - Add next configuration in /node_modules/react-native-vector-icons/fonts.gradle if there is an error with the dependencie.
+```
+App.tsx              Punto de entrada: navegación y contexto de sesión
+src/
+  api/               Llamadas a PokeAPI y favoritos en AsyncStorage
+  components/        Lista, tarjeta, detalle, formulario de login
+  context/           AuthContext (sesión en memoria)
+  hooks/             useAuth
+  models/            Tipos de pokemon
+  navigation/        Pestañas y pilas de navegación
+  screens/           Pokedex, Pokemon, Favoritos y Mi cuenta
+  utils/             Constantes y usuario de demostración
+__tests__/           Pruebas de la aplicación y de los servicios
+```
 
-    android.applicationVariants.all { def variant ->
-        def targetName = variant.name.capitalize()
+## Problema conocido en Android
 
-        def lintAnalyzeDebugTask = tasks.findByName("lintAnalyzeDebug")
-        if (lintAnalyzeDebugTask) {
-            lintAnalyzeDebugTask.dependsOn(fontCopyTask)
-            lintAnalyzeDebugTask.mustRunAfter(fontCopyTask)
-        }
+Si la compilación falla en una tarea de `lint` relacionada con las fuentes de `react-native-vector-icons`, añade esto al final de `node_modules/react-native-vector-icons/fonts.gradle` (dentro del bloque `android.applicationVariants.all`):
 
-        def lintVitalAnalyzeReleaseTask = tasks.findByName("lintVitalAnalyzeRelease")
-        if (lintVitalAnalyzeReleaseTask) {
-            lintVitalAnalyzeReleaseTask.dependsOn(fontCopyTask)
-            lintVitalAnalyzeReleaseTask.mustRunAfter(fontCopyTask)
-        }
+```groovy
+def lintAnalyzeDebugTask = tasks.findByName("lintAnalyzeDebug")
+if (lintAnalyzeDebugTask) {
+    lintAnalyzeDebugTask.dependsOn(fontCopyTask)
+    lintAnalyzeDebugTask.mustRunAfter(fontCopyTask)
+}
 
-        def generateAssetsTask = tasks.findByName("generate${targetName}Assets")
-        generateAssetsTask.dependsOn(fontCopyTask)
-    }
+def lintVitalAnalyzeReleaseTask = tasks.findByName("lintVitalAnalyzeRelease")
+if (lintVitalAnalyzeReleaseTask) {
+    lintVitalAnalyzeReleaseTask.dependsOn(fontCopyTask)
+    lintVitalAnalyzeReleaseTask.mustRunAfter(fontCopyTask)
+}
+```
+
+Es un cambio dentro de `node_modules`, así que hay que repetirlo después de cada `npm install`.
+
+## Créditos
+
+Los datos y las imágenes de los pokemon vienen de [PokeAPI](https://pokeapi.co/). Pokémon y sus nombres son marcas de Nintendo, Game Freak y Creatures; este proyecto es solo educativo.
+
+## Autor
+
+Leonardo Medina — [github.com/leomedinadev](https://github.com/leomedinadev)

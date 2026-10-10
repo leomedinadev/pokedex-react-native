@@ -1,24 +1,20 @@
 import React from 'react'
 import { Image, StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native'
-import { constants } from '../utils/constants'
-import { useNavigation } from '@react-navigation/native';
+import { getPokemonTypeColor } from '../utils/constants'
+import { useNavigation, NavigationProp, ParamListBase } from '@react-navigation/native';
+import { Pokemon } from '../models/Pokemon';
 
+interface PokemonCardProps {
+  pokemon: Pokemon
+}
 
-
-// const getColorByPokemonType = (type) => constants.POKEMON_TYPE_COLORS[type.toLowerCase()]
-// interface PokemonProps {
-//   pokemon: Pokemon
-// }
-function PokemonCard(props: any) {
+function PokemonCard(props: PokemonCardProps) {
   const {pokemon} = props;
-  const navigation = useNavigation();
-  // console.log('POKEMON_TYPE_COLORS => ', constants.POKEMON_TYPE_COLORS);
-  //console.log('POKEMON_TYPE_COLORS ' + pokemon.type + ' => ', constants.POKEMON_TYPE_COLORS[pokemon.type]);
-  const pokemonColor = constants.POKEMON_TYPE_COLORS[pokemon.type.toLowerCase()];
+  const navigation = useNavigation<NavigationProp<ParamListBase>>();
+  const pokemonColor = getPokemonTypeColor(pokemon.type);
   const bgStyles = {backgroundColor: pokemonColor, ...styles.bgStyles};
 
   const goToPokemon = () => {
-    console.log('vamos por el pokemon ' + pokemon.id);
     navigation.navigate('Pokemon', { id: pokemon.id });
   }
   return (
@@ -26,14 +22,13 @@ function PokemonCard(props: any) {
       <View style={styles.card}>
         <View style={styles.spacing}>
           <View style={bgStyles}>
-            <Text style={styles.number}>#{`${pokemon.order}`.padStart(3, '0')}</Text>
+            <Text style={styles.number}>#{`${pokemon.id}`.padStart(3, '0')}</Text>
             <Text style={styles.name}>{pokemon.name}</Text>
             <Image source={{ uri: pokemon.image}} style={styles.image}/>
           </View>
         </View>
       </View>
     </TouchableWithoutFeedback>
-    
   )
 }
 

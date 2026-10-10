@@ -6,8 +6,7 @@ import useAuth from '../hooks/useAuth';
 
 function AccountScreen() {
   const {auth} = useAuth();
-  console.log('auth --> ', auth);
   return <View style={{backgroundColor: '#FFF5EE'}}>{auth ? <UserData/> : <LoginForm/>}</View>;
 }
 
-export {AccountScreen} 
+export {AccountScreen}

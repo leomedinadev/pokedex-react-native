@@ -2,8 +2,9 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
 import { PokedexScreen } from '../screens/PokedexScreen';
 import { PokemonScreen } from '../screens/PokemonScreen';
+import { PokemonStackParamList } from './types';
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<PokemonStackParamList>();
 
 function PokedexNavigation() {
   return (

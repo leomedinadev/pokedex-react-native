@@ -7,7 +7,7 @@ import {user, userDetails } from '../../utils/userDB';
 
 function LoginForm() {
     const [error, setError] = useState("");
-    const { login, auth } = useAuth();
+    const { login } = useAuth();
 
     const formikLogin = useFormik({
         initialValues: initialValues(),
@@ -18,16 +18,15 @@ function LoginForm() {
           const { username, password } = formValue;
     
           if (username !== user.username || password !== user.password) {
-            setError("El usuario o la contraseña no son correcto");
+            setError("El usuario o la contraseña no son correctos");
           } else {
-            console.log(userDetails);
             login(userDetails);
           }
         },
       });
   return (
     <View style={styles.container}>
-        <Text style={styles.title}>Iniciar session</Text>
+        <Text style={styles.title}>Iniciar sesión</Text>
         <TextInput 
             placeholder='Nombre de usuario' 
             autoCapitalize='none'
@@ -45,9 +44,8 @@ function LoginForm() {
         />
         <Button 
             title='Entrar'
-            onPress={formikLogin.handleSubmit}
-            style={styles.btnLogin} />
-        
+            onPress={() => formikLogin.handleSubmit()} />
+
         <Text style={styles.error}>{formikLogin.errors.username}</Text>
         <Text style={styles.error}>{formikLogin.errors.password}</Text>
 
@@ -66,7 +64,7 @@ function initialValues() {
 function validationSchema() {
     return {
         username: Yup.string().required("El usuario es obligatorio"),
-        password: Yup.string().required("La contraseña es obligatorio"),
+        password: Yup.string().required("La contraseña es obligatoria"),
     }
 }
 
@@ -84,11 +82,6 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         margin: 10,
         height: 40
-    },
-    btnLogin: {
-        margin: 10,
-        borderRadius: 10,
-        padding: 20
     },
     error: {
         textAlign: "center",

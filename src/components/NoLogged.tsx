@@ -1,23 +1,19 @@
 import { Text, View, StyleSheet, Button } from 'react-native'
-import React, { Component } from 'react'
-import { useNavigation } from "@react-navigation/native";
+import React from 'react'
+import { useNavigation, NavigationProp, ParamListBase } from "@react-navigation/native";
 
 function NoLogged() {
-    const navigation = useNavigation();
+    const navigation = useNavigation<NavigationProp<ParamListBase>>();
     return (
       <View style={styles.content}>
          <Text style={styles.text}>
-            Para ver esta pantalla tienes que inicar sesión
+            Para ver esta pantalla tienes que iniciar sesión
         </Text>
         <Button
             title="Ir al login"
-            onPress={() => navigation.navigate('Account')}
+            onPress={() => navigation.navigate('AccountNavigation', { screen: 'Account' })}
         />
-        
       </View>
-      // <View style={styles.content}>
-      //     <FontAwesome />
-      // </View>
     )
 }
 

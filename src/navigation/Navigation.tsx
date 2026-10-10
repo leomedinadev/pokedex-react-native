@@ -1,8 +1,6 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import React from 'react'
-//import Icon from 'react-native-vector-icons/FontAwesome5';
 import Icon from 'react-native-vector-icons/FontAwesome6';
-//import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { Image, Text } from 'react-native';
 import { FavoriteNavigation } from './FavoriteNavigation';
 import { PokedexNavigation } from './PokedexNavigation';
@@ -11,7 +9,6 @@ import { AccountNavigation } from './AccountNavigation';
 
 const Tab = createBottomTabNavigator();
 
-//const Tab = createMaterialBottomTabNavigator();
 const colorActive = '#800080';
 const colorInactive = '#736AAB';
 

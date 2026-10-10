@@ -1,13 +1,14 @@
 import React from 'react'
-import { Text, SafeAreaView, ScrollView, View, StyleSheet, Image } from 'react-native';
+import { Text, SafeAreaView, View, StyleSheet, Image } from 'react-native';
 import { capitalize } from 'lodash';
 import Type from './Type';
 import Stats from './Stats';
-import { constants } from '../../utils/constants';
+import { getPokemonTypeColor } from '../../utils/constants';
+import { PokemonDetail } from '../../models/Pokemon';
 
-function DetailPokemon(props: any) {
+function DetailPokemon(props: { pokemon: PokemonDetail }) {
     const { pokemon } = props;
-    const color = constants.POKEMON_TYPE_COLORS[pokemon.type.toLowerCase()];
+    const color = getPokemonTypeColor(pokemon.type);
     const bgStyle = [{ backgroundColor: color, ...styles.bg}];
     
     return (
@@ -16,7 +17,7 @@ function DetailPokemon(props: any) {
             <SafeAreaView style={styles.content}>
                 <View style={styles.header}>
                     <Text style={styles.name}>{capitalize(pokemon.name)}</Text>
-                    <Text style={styles.order}>#{`${pokemon.order}`.padStart(3, '0')}</Text>
+                    <Text style={styles.order}>#{`${pokemon.id}`.padStart(3, '0')}</Text>
                 </View>
                 <View style={styles.contentImg}>
                     <Image source={ {uri: pokemon.image}} style={styles.image} />
